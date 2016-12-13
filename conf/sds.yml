@@ -1,0 +1,38 @@
+logging:
+    level: DEBUG
+    appenders:
+        - type: console
+          threshold: INFO
+          target: stderr
+        - type: file
+          threshold: INFO
+          currentLogFilename: ./logs/sds.log
+          archivedLogFilenamePattern: ./logs/sds-%d.log.gz
+          archivedFileCount: 5 
+
+server:
+    applicationConnectors:
+        - type: http
+          port: 5678
+    adminConnectors:
+        - type: http
+          port: 5679
+
+jerseyClient: 
+    gzipEnabled: false
+    gzipEnabledForRequests: false 
+    timeout: 30s
+    connectionTimeout: 10s
+    retries: 3
+
+workers:
+    - templateName: templates/test.tpl   #模版文件路径
+      dgThNum: 2          # 数据生成线程数
+      dgInterval: 1000    # 数据生成时间间隔 ms
+      queueSize: 10000 
+      dsThNum: 2          # 数据发送线程数
+      dsInterval: 0       # 数据发送时间间隔 ms
+      dsUrl: http://localhost:5678/dataCenter/collect    #发送url
+
+testServerEnabled: true
+        
